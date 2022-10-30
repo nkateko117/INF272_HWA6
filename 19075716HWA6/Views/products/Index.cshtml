@@ -1,0 +1,88 @@
+﻿@model IPagedList<_19075716HWA6.Models.product>
+@using PagedList.Mvc;
+@using PagedList;
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Products</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        @using (Html.BeginForm("index", "products", FormMethod.Post))
+        {
+        <div class="col-md-8">
+            @*  @Html.TextBox(name="Tname", "", new { @class = "form-control" })*@
+            <input type="text" name="Tname" class="form-control" placeholder="Enter Product Name" />
+        </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        }
+    </div>
+    <div class="col-md-1">
+        @Html.ActionLink("Create", "Create", "products", null, new { @class = "btn btn-primary" })
+    </div>
+</div>
+<br />
+<table class="table" id="myTable">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.First().product_name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().model_year)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().list_price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().brand.brand_name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.First().category.category_name)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.product_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.model_year)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.list_price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.brand.brand_name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.category.category_name)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.product_id }, new { @class = "btn btn-primary" }) |
+                @Html.ActionLink("Details", "Details", new { id = item.product_id }, new { @class = "btn btn-info" }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.product_id }, new { @class = "btn btn-danger" })
+            </td>
+        </tr>
+    }
+
+</table>
+ @Html.PagedListPager(Model,i=>Url.Action("Index", "products",new { i, Tname = Request.QueryString["Tname"] }))
+
+
+
+
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('#myTable').DataTable();
+        });
+    </script>
+}

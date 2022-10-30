@@ -1,0 +1,71 @@
+﻿@model IPagedList<_19075716HWA6.Models.order_items>
+@using PagedList.Mvc;
+@using PagedList;
+@{
+    ViewBag.Title = "Orders";
+}
+
+<h2>Orders</h2>
+
+<div class="row">
+    <div class="col-md-3">
+        <input type="text" name="Sname" class="form-control" placeholder="yyyy/mm/dd" />
+    </div>
+    <div class="col-md-7">
+        <button type="submit" class="btn btn-primary">Search</button>
+    </div>
+</div>
+<br />
+
+@foreach (var inItem in Model.Select(a => a.order_id).Distinct())
+{
+    var time = DateTime.Today;
+    foreach(var tt in Model)
+    {
+        if (tt.order.order_id == inItem)
+        {
+            time = tt.order.order_date.Date;
+            break;
+        }
+    }
+
+    <h2>Order @inItem - @time</h2>
+    <table class="table" id="myTable">
+        <tr>
+            <th>Product Name</th>
+            <th>List Price</th>
+            <th>Quantity</th>
+            <th> Total</th>
+        </tr>
+
+        @foreach (var item in Model.Where(a => a.order_id == inItem))
+        {
+            var total = item.list_price * item.quantity;
+            <tr>
+                <td>
+                    @item.product.product_name
+                </td>
+                <td>
+                    @item.list_price
+                </td>
+                <td>
+                    @item.quantity
+                </td>
+                <td>
+                    @total
+                </td>
+            </tr>
+        }
+    </table>
+}
+
+@Html.PagedListPager(Model, i => Url.Action("Orders", "products", new { i, Sname = Request.QueryString["Sname"] }))
+
+@section scripts{
+    <script>
+        $('.datepicker').datepicker({
+            format: 'mm/dd/yyyy',
+            startDate: '-3d'
+        });
+    </script>
+}
